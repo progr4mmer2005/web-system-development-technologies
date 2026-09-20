@@ -20,9 +20,8 @@ ruby bin/dev
 
 | Маршрут | Ответ |
 | --- | --- |
-| `/` | `¡Hola, mundo!` |
+| `/` | `goodbye, world!` |
 | `/hello-world` | `hello, world!` |
 | `/hello` | `¡Hola, mundo!` |
 | `/goodbye` | `goodbye, world!` |
 | `/up` | Проверка работоспособности |
-

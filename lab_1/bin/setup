@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require "rbconfig"
+
+Dir.chdir File.expand_path("..", __dir__) do
+  system("bundle", "check") || system("bundle", "install", exception: true)
+  system(RbConfig.ruby, "bin/rails", "db:prepare", exception: true)
+  exec(RbConfig.ruby, "bin/dev") unless ARGV.include?("--skip-server")
+end

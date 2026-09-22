@@ -6,6 +6,7 @@ gem "sqlite3", ">= 2.1"
 gem "puma", ">= 5.0"
 gem "jbuilder"
 gem "json", "< 3"
+gem "fiddle"
 
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false

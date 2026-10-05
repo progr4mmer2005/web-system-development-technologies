@@ -16,3 +16,10 @@ end
 group :development do
   gem "web-console"
 end
+
+group :test do
+  gem "minitest", "~> 5.0"
+  gem "minitest-reporters", "~> 1.8"
+  gem "guard", "~> 2.19", require: false
+  gem "guard-minitest", "~> 2.4", require: false
+end

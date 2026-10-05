@@ -18,3 +18,4 @@ Thumbs.db
 /storage/*
 !/storage/.keep
 /public/assets/
+/spring/*.pid

@@ -1,4 +1,68 @@
 #!/usr/bin/env ruby.exe
 require "rbconfig"
 
-exec RbConfig.ruby, "bin/rails", "server", *ARGV
+Dir.chdir File.expand_path("..", __dir__)
+require "bundler/setup"
+
+$stdout.sync = true
+children = {}
+server_pid = nil
+exit_code = 0
+process_group = Gem.win_platform? ? { new_pgroup: true } : { pgroup: true }
+
+%w[INT TERM].each { |signal| Signal.trap(signal) { raise Interrupt } }
+
+begin
+  puts "Starting Rails and Guard. Press Ctrl+C to stop both."
+  server_pid = Process.spawn(RbConfig.ruby, "bin/rails", "server", *ARGV, **process_group)
+  children[server_pid] = "Rails"
+  guard_pid = Process.spawn(
+    { "RAILS_ENV" => "test" },
+    RbConfig.ruby, Gem.bin_path("guard", "guard"),
+    "--force-polling", "--no-notify", "--no-interactions",
+    in: File::NULL, **process_group
+  )
+  children[guard_pid] = "Guard"
+
+  pid, status = Process.wait2
+  puts "#{children.delete(pid)} exited; stopping development processes."
+  exit_code = status.exitstatus || 1
+rescue Interrupt
+  puts "\nStopping Rails and Guard..."
+ensure
+  %w[INT TERM].each { |signal| Signal.trap(signal, "IGNORE") }
+
+  children.each_key do |pid|
+    # Signal the group so tests started by Guard stop too.
+    Process.kill("INT", Gem.win_platform? ? pid : -pid)
+  rescue Errno::ESRCH, Errno::EINVAL, Errno::EPERM
+  end
+
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 5
+  until children.empty? || Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+    children.delete_if do |pid, _|
+      Process.waitpid(pid, Process::WNOHANG)
+    rescue Errno::ECHILD
+      true
+    end
+    sleep 0.1 unless children.empty?
+  end
+
+  children.each_key do |pid|
+    if Gem.win_platform?
+      system("taskkill", "/PID", pid.to_s, "/T", "/F", out: File::NULL, err: File::NULL)
+    else
+      Process.kill("KILL", -pid)
+    end
+    Process.waitpid(pid)
+  rescue Errno::ESRCH, Errno::ECHILD
+  end
+
+  # Windows can terminate a child before Puma runs its pidfile cleanup.
+  pidfile = ENV.fetch("PIDFILE", "tmp/pids/server.pid")
+  if server_pid && File.exist?(pidfile) && File.read(pidfile).strip == server_pid.to_s
+    File.delete(pidfile)
+  end
+end
+
+exit exit_code

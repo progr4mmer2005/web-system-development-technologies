@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby.exe
+require "rbconfig"
+
+exec RbConfig.ruby, "bin/rails", "server", *ARGV

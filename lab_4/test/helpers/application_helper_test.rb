@@ -16,4 +16,10 @@ class ApplicationHelperTest < ActionView::TestCase
   test "full title includes the page name before the base title" do
     assert_equal "Help | #{@base_title}", full_title("Help")
   end
+
+  test "layout renders a title containing an apostrophe without double escaping" do
+    render inline: '<% provide(:title, "Help\'s on the way") %>', layout: "layouts/application"
+
+    assert_select "title", "Help's on the way | #{@base_title}"
+  end
 end

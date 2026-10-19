@@ -4,8 +4,6 @@ guard :minitest, all_on_start: false, spring: false, test_file_patterns: %w[*_te
   watch("config/routes.rb") { "test" }
   watch("config/application.rb") { "test" }
   watch("Gemfile.lock") { "test" }
-  watch("lib/ruby_tutorial.rb") { "test/lib/ruby_tutorial_test.rb" }
-  watch("script/string_extensions.rb") { "test/lib/string_extensions_test.rb" }
   watch(%r{^config/(environments|initializers)/.*\.rb$}) { "test" }
 
   watch(%r{^app/models/(.*?)\.rb$}) do |matches|

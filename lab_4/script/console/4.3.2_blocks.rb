@@ -19,3 +19,13 @@ p ("a".."z").to_a
 p ("a".."z").to_a.shuffle
 p ("a".."z").to_a.shuffle[0..7]
 p ("a".."z").to_a.shuffle[0..7].join
+
+def test(description, &block)
+  puts description
+  block.call
+end
+
+test "should get home" do
+  puts "assert_response :success"
+  puts "assert_select \"title\", \"Ruby on Rails Tutorial Sample App\""
+end

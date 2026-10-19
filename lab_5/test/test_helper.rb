@@ -14,6 +14,7 @@ module ActiveSupport
     parallelize(workers: :number_of_processors, with: :threads)
 
     fixtures :all
+    include ApplicationHelper
 
   end
 end

@@ -11,6 +11,7 @@ gem "bootsnap", require: false
 gem "bootstrap-sass", "3.4.1", require: false
 gem "dartsass-rails"
 gem "bcrypt", "~> 3.1"
+gem "jquery-rails", require: false
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

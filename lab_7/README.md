@@ -47,9 +47,9 @@ ruby bin/rails db:migrate:reset
 
 | № | Что сделано |
 | --- | --- |
-| 1 | `gravatar_for(user, options = { size: 80 })`, тесты размера в `test/helpers/users_helper_test.rb` |
-| 2 | Тесты сообщений об ошибках: `div#error_explanation`, текст `alert-danger`, `div.field_with_errors`, отдельные сообщения |
-| 3 | Тест флэша: `assert_not flash.empty?` и текст `alert-success` |
+| 1 | `gravatar_for(user, options = { size: 80 })`, размер передаётся в URL как `?s=50`; пример в `script/console/7.1.4_gravatar.rb` |
+| 2 | Тест сообщений об ошибках по шаблону 7.32: `div#error_explanation` и `div.field_with_errors` |
+| 3 | Тест флэша по шаблону 7.33: `assert_not flash.empty?` |
 | 4 | Флэш в макете через `content_tag(:div, message, class: "alert alert-#{message_type}")` |
 
 ## Отладчик (7.1.3)
@@ -96,7 +96,7 @@ ruby bin/rails db:test:prepare
 ruby bin/rails test
 ```
 
-Итог: 25 тестов, все проходят.
+Итог: 23 теста, все проходят.
 
 ## Отличия от методички (Rails 8)
 

@@ -3,7 +3,12 @@ class SessionsController < ApplicationController
   end
 
   def create
-    render "new", status: :unprocessable_content
+    user = User.find_by(email: params[:session][:email].downcase)
+    if user && user.authenticate(params[:session][:password])
+    else
+      flash[:danger] = "Invalid email/password combination"
+      render "new", status: :unprocessable_content
+    end
   end
 
   def destroy

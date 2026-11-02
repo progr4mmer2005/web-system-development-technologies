@@ -33,7 +33,6 @@ ensure
   %w[INT TERM].each { |signal| Signal.trap(signal, "IGNORE") }
 
   children.each_key do |pid|
-    # Signal the group so tests started by Guard stop too.
     Process.kill("INT", Gem.win_platform? ? pid : -pid)
   rescue Errno::ESRCH, Errno::EINVAL, Errno::EPERM
   end
@@ -58,7 +57,6 @@ ensure
   rescue Errno::ESRCH, Errno::ECHILD
   end
 
-  # Windows can terminate a child before Puma runs its pidfile cleanup.
   pidfile = ENV.fetch("PIDFILE", "tmp/pids/server.pid")
   if server_pid && File.exist?(pidfile) && File.read(pidfile).strip == server_pid.to_s
     File.delete(pidfile)

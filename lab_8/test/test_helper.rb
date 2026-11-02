@@ -1,0 +1,41 @@
+ENV["RAILS_ENV"] ||= "test"
+require_relative "../config/environment"
+require "rails/test_help"
+require "minitest/reporters"
+
+Minitest::Reporters.use!(
+  Minitest::Reporters::DefaultReporter.new(color: true),
+  ENV,
+  Minitest.backtrace_filter
+)
+
+module ActiveSupport
+  class TestCase
+    parallelize(workers: :number_of_processors, with: :threads)
+
+    fixtures :all
+    include ApplicationHelper
+
+    def is_logged_in?
+      !session[:user_id].nil?
+    end
+
+    def log_in_as(user, options = {})
+      password = options[:password] || "password"
+      remember_me = options[:remember_me] || "1"
+      if integration_test?
+        post login_path, params: { session: { email: user.email,
+                                              password: password,
+                                              remember_me: remember_me } }
+      else
+        session[:user_id] = user.id
+      end
+    end
+
+    private
+
+      def integration_test?
+        defined?(follow_redirect!)
+      end
+  end
+end

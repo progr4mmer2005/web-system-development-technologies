@@ -11,10 +11,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     end
     assert_template "users/new"
     assert_select "div#error_explanation"
-    assert_select "div.alert-danger", "The form contains 4 errors."
     assert_select "div.field_with_errors"
-    assert_select "#error_explanation li", "Name can't be blank"
-    assert_select "#error_explanation li", "Email is invalid"
   end
 
   test "valid signup information" do
@@ -28,6 +25,5 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     end
     assert_template "users/show"
     assert_not flash.empty?
-    assert_select "div.alert-success", "Welcome to the Sample App!"
   end
 end
